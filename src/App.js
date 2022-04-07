@@ -1,43 +1,46 @@
 import React, { useState, useRef, useEffect } from 'react';
 import TodoList from './TodoList';
-import {v4 as uuidv4 } from 'uuid';
+import {v4 as uuidv4 } from 'uuid'; // Create random id's
 
-const LOCAL_STORAGE_KEY = 'todoApp.todos';
+const LOCAL_STORAGE_KEY = 'todoApp.todos'; // Create a local storage key for todo
 
+// This is the root of the entire application
 function App() {
-  const [todos, setTodos] = useState([]); // object destructuring
+  const [todos, setTodos] = useState([]); // Make array destructured and set to the current state
   const todoNameRef = useRef();
   
   useEffect(() => { // store todo
     const storedTodos = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
-    if(storedTodos)setTodos(storedTodos);
-  }, []);
+    if(storedTodos)setTodos(storedTodos); // if we have stored todos, set our stored todos to those todos
+  }, []); // Array = all of our dependencies function called once, since empty, won't be recalled
 
   useEffect(() => { // get todo
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(todos));
-  }, [todos]);
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(todos)); // get todo from local storage as a string
+  }, [todos]); // Array = all of our todos
 
   function toggleTodo(id) {
     const newTodos = [...todos];
-    const todo = newTodos.find(todo => todo.id === id);
-    todo.complete = !todo.complete;
+    const todo = newTodos.find(todo => todo.id === id); // find the todo equal to our id
+    todo.complete = !todo.complete; // allow us to toggle our todo from complete to not compelete
     setTodos(newTodos);
   }
 
   function handleAddTodo(e) {
-    const name = todoNameRef.current.value;
-    if(name === '') return;
-    setTodos(prevTodos => {
+    const name = todoNameRef.current.value; // Reference ref in html below (current value of input)
+    if(name === '') return; // Return if name is an empty string
+    setTodos(prevTodos => { // Give previous todo and add new todo to list.
       return [...prevTodos, { id: uuidv4(), name: name, complete: false }]
     })
-    todoNameRef.current.value = null;
+    todoNameRef.current.value = null; // After clicking to add todo, text input box will be cleared
   }
  
   function handleClearTodos() {
-    const newTodos = todos.filter(todo => !todo.complete);
+    const newTodos = todos.filter(todo => !todo.complete); // Filter todos that are not complete
     setTodos(newTodos);
   }
 
+// Use parentheses to return all code inside of them
+// return the html code for the Todo List wrapped inside of an empty element (fragment)
  return (
     <>
       <div class = "card">
